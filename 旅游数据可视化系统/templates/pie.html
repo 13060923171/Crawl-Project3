@@ -1,0 +1,117 @@
+﻿{% extends "layout.html" %}
+
+{% block left %}
+<div class="col-sm-3 col-md-2 sidebar">
+    <ul class="nav nav-sidebar">
+       <li><a href="/line">春/夏/秋/冬/旅游成本指数省份</a></li>
+        <li><a href="/bar">游客餐饮信息获取渠道/旅游平台网站考虑,因素</a></li>
+        <li><a href="active">国内旅游收入分布情况"城镇居民/农村居民"</a></li>
+        <li><a href="/bar_3">国内旅游人数情况/出境旅游</a></li>
+        <li><a href="/bar_4">旅行社团内旅游组团人数和接待人数</a></li>
+    </ul>
+</div>
+{% endblock %}
+
+{% block right %}
+<!--右边展示-->
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+    <h1 class="page-header">{{title}}</h1>
+
+    <div class="row placeholders">
+        <!--展示区-->
+        <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+        <div class="chart-container" style="height:500px;" id="f28d6bf937704fd8a0bcabb78db2af3a">
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block echarts_js %}
+<script type="text/javascript" src="https://assets.pyecharts.org/assets/echarts.min.js"></script>
+<script type="text/javascript" src="https://assets.pyecharts.org/assets/themes/romantic.js"></script>
+
+<script>
+        var chart_f28d6bf937704fd8a0bcabb78db2af3a = echarts.init(
+            document.getElementById('f28d6bf937704fd8a0bcabb78db2af3a'), 'romantic', {renderer: 'canvas'});
+        var option_f28d6bf937704fd8a0bcabb78db2af3a = {
+    "animation": true,
+    "animationThreshold": 2000,
+    "animationDuration": 1000,
+    "animationEasing": "cubicOut",
+    "animationDelay": 0,
+    "animationDurationUpdate": 300,
+    "animationEasingUpdate": "cubicOut",
+    "animationDelayUpdate": 0,
+    "series": [
+        {
+            "type": "pie",
+            "clockwise": true,
+            "data": [
+                {
+                    "name": "\u57ce\u9547\u5c45\u6c11",
+                    "value": "82"
+                },
+                {
+                    "name": "\u519c\u6751\u5c45\u6c11",
+                    "value": "18"
+                }
+            ],
+            "radius": [
+                "0%",
+                "75%"
+            ],
+            "center": [
+                "50%",
+                "50%"
+            ],
+            "label": {
+                "show": true,
+                "position": "top",
+                "margin": 8,
+                "formatter": "{b}: {d}%"
+            },
+            "rippleEffect": {
+                "show": true,
+                "brushType": "stroke",
+                "scale": 2.5,
+                "period": 4
+            }
+        }
+    ],
+    "legend": [
+        {
+            "data": [
+                "\u57ce\u9547\u5c45\u6c11",
+                "\u519c\u6751\u5c45\u6c11"
+            ],
+            "selected": {},
+            "show": true,
+            "padding": 5,
+            "itemGap": 10,
+            "itemWidth": 25,
+            "itemHeight": 14
+        }
+    ],
+    "tooltip": {
+        "show": true,
+        "trigger": "item",
+        "triggerOn": "mousemove|click",
+        "axisPointer": {
+            "type": "line"
+        },
+        "showContent": true,
+        "alwaysShowContent": false,
+        "showDelay": 0,
+        "hideDelay": 100,
+        "textStyle": {
+            "fontSize": 14
+        },
+        "borderWidth": 0,
+        "padding": 5
+    },
+};
+        chart_f28d6bf937704fd8a0bcabb78db2af3a.setOption(option_f28d6bf937704fd8a0bcabb78db2af3a);
+    </script>
+{% endblock %}

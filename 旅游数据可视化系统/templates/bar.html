@@ -1,0 +1,225 @@
+﻿<body bgcolor="#E6E6FA">
+{% extends "layout.html" %}
+
+{% block left %}
+<div class="col-sm-3 col-md-2 sidebar">
+    <ul class="nav nav-sidebar">
+        <li><a href="/line">春/夏/秋/冬/旅游成本指数省份</a></li>
+        <li><a href="active">游客餐饮信息获取渠道/旅游平台网站考虑,因素</a></li>
+        <li><a href="/pie">国内旅游收入分布情况"城镇居民/农村居民"</a></li>
+        <li><a href="/bar_3">国内旅游人数情况/出境旅游</a></li>
+        <li><a href="/bar_4">旅行社团内旅游组团人数和接待人数</a></li>
+    </ul>
+</div>
+{% endblock %}
+
+{% block right %}
+
+<script type="text/javascript" src="https://assets.pyecharts.org/assets/echarts.min.js"></script>
+<script type="text/javascript" src="https://assets.pyecharts.org/assets/themes/romantic.js"></script>
+
+<!--右边展示-->
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+    <h1 class="page-header">{{title}}</h1>
+
+    <div class="row placeholders">
+        <!--展示区-->
+        <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+        <div class="chart-container" style="height:500px;" id="b28492ed5bc846a2af0d6a38b928699d">
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block echarts_js %}
+
+<script>
+        var chart_b28492ed5bc846a2af0d6a38b928699d = echarts.init(
+            document.getElementById('b28492ed5bc846a2af0d6a38b928699d'), 'romantic', {renderer: 'canvas'});
+        var option_b28492ed5bc846a2af0d6a38b928699d = {
+    "animation": true,
+    "animationThreshold": 2000,
+    "animationDuration": 1000,
+    "animationEasing": "cubicOut",
+    "animationDelay": 0,
+    "animationDurationUpdate": 300,
+    "animationEasingUpdate": "cubicOut",
+    "animationDelayUpdate": 0,
+    "series": [
+        {
+            "type": "bar",
+            "name": "\u666e\u901a\u65c5\u6e38\u7528\u6237\uff08%\uff09",
+            "legendHoverLink": true,
+            "data": [
+                "42",
+                "40",
+                "39",
+                "35",
+                "35",
+                "17"
+            ],
+            "showBackground": false,
+            "stack": "stack1",
+            "barMinHeight": 0,
+            "barCategoryGap": "20%",
+            "barGap": "30%",
+            "large": false,
+            "largeThreshold": 400,
+            "seriesLayoutBy": "column",
+            "datasetIndex": 0,
+            "clip": true,
+            "zlevel": 0,
+            "z": 2,
+            "label": {
+                "show": true,
+                "position": "top",
+                "margin": 8
+            }
+        },
+        {
+            "type": "bar",
+            "name": "\u53bb\u54ea\u513f\u7528\u6237\uff08%\uff09",
+            "legendHoverLink": true,
+            "data": [
+                "58",
+                "42",
+                "45",
+                "65",
+                "65",
+                "83"
+            ],
+            "showBackground": false,
+            "stack": "stack1",
+            "barMinHeight": 0,
+            "barCategoryGap": "20%",
+            "barGap": "30%",
+            "large": false,
+            "largeThreshold": 400,
+            "seriesLayoutBy": "column",
+            "datasetIndex": 0,
+            "clip": true,
+            "zlevel": 0,
+            "z": 2,
+            "label": {
+                "show": true,
+                "position": "top",
+                "margin": 8
+            }
+        }
+    ],
+    "legend": [
+        {
+            "data": [
+                "\u666e\u901a\u65c5\u6e38\u7528\u6237\uff08%\uff09",
+                "\u53bb\u54ea\u513f\u7528\u6237\uff08%\uff09"
+            ],
+            "selected": {
+                "\u666e\u901a\u65c5\u6e38\u7528\u6237\uff08%\uff09": true,
+                "\u53bb\u54ea\u513f\u7528\u6237\uff08%\uff09": true
+            },
+            "show": true,
+            "padding": 5,
+            "itemGap": 10,
+            "itemWidth": 25,
+            "itemHeight": 14
+        }
+    ],
+    "tooltip": {
+        "show": true,
+        "trigger": "item",
+        "triggerOn": "mousemove|click",
+        "axisPointer": {
+            "type": "line"
+        },
+        "showContent": true,
+        "alwaysShowContent": false,
+        "showDelay": 0,
+        "hideDelay": 100,
+        "textStyle": {
+            "fontSize": 14
+        },
+        "borderWidth": 0,
+        "padding": 5
+    },
+    "xAxis": [
+        {
+            "type": "category",
+            "show": true,
+            "scale": false,
+            "nameLocation": "end",
+            "nameGap": 15,
+            "gridIndex": 0,
+            "axisPointer": {
+                "show": false,
+                "type": "line"
+            },
+            "inverse": false,
+            "offset": 0,
+            "splitNumber": 5,
+            "minInterval": 0,
+            "splitLine": {
+                "show": false,
+                "lineStyle": {
+                    "show": true,
+                    "width": 1,
+                    "opacity": 1,
+                    "curveness": 0,
+                    "type": "solid"
+                }
+            },
+            "data": [
+                "\u4ef7\u683c\u4f18\u60e0\u591a",
+                "\u4ea7\u54c1\u4e30\u5bcc",
+                "\u653b\u7565\u8be6\u7ec6",
+                "\u65c5\u6e38\u7f51",
+                "\u70b9\u8bc4",
+                "\u4eb2\u670b\u597d\u53cb"
+            ]
+        }
+    ],
+    "yAxis": [
+        {
+            "type": "value",
+            "name": "\u4eba\u6570\u5360\u6bd4",
+            "show": true,
+            "scale": false,
+            "nameLocation": "end",
+            "nameGap": 15,
+            "interval": 20,
+            "gridIndex": 0,
+            "axisTick": {
+                "show": true,
+                "alignWithLabel": false,
+                "inside": false
+            },
+            "axisLabel": {
+                "show": true,
+                "position": "top",
+                "margin": 8,
+                "formatter": "{value} %"
+            },
+            "inverse": false,
+            "offset": 0,
+            "splitNumber": 5,
+            "min": 0,
+            "max": 100,
+            "minInterval": 0,
+            "splitLine": {
+                "show": false,
+                "lineStyle": {
+                    "show": true,
+                    "width": 1,
+                    "opacity": 1,
+                    "curveness": 0,
+                    "type": "solid"
+                }
+            }
+        }
+    ],
+};
+        chart_b28492ed5bc846a2af0d6a38b928699d.setOption(option_b28492ed5bc846a2af0d6a38b928699d);
+    </script>
+{% endblock %}
+</body>
