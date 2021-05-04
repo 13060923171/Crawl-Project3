@@ -1,0 +1,3 @@
+
+a = '3KGjWo9w0A2H2OcA5tQci717hAYAAAAAZg0AAA3FQTuxg448C3pkvgRcDonrp7jM6uYVuYj8rmGtE4hyHrk_6dykwdr4ijgHchZeTA'
+print(len(a))
