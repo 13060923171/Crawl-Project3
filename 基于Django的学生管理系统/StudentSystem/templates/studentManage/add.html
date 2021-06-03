@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>请在下列信息栏中填入学生的基本信息</h1>
+<form method="post" action="{% url 'student:add' %}">
+    {% csrf_token %}
+    学生学号：<input type="text" name="stu_id"/><br>
+    学生姓名：<input type="text" name="stu_name"/><br>
+    {% if msg %}
+        <h5>{{ msg }}</h5><br>
+    {% endif %}
+    学生电话：<input type="text" name="stu_phone"/><br>
+    学生地址：<input type="text" name="str_addr"/><br>
+    学生院系：<input type="text" name="stu_faculty"/><br>
+    学生专业：<input type="text" name="stu_major"/><br>
+    <input class="bc" type="submit" value="保存"/>
+    {% if error %}
+        <h5>{{ error }}</h5><br>
+    {% endif %}
+    {% if sucess %}
+        <h5>{{ sucess }}</h5><br>
+    {% endif %}
+</form>
+</body>
+</html>

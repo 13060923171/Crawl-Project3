@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>根据学号来修改学生基本信息</h1>
+<form method="post" action="/student/update/">
+    {% csrf_token %}
+    学生学号：<input type="text" name="stu_id" placeholder={{ stu_id }}><br>
+    学生姓名：<input type="text" name="stu_name" placeholder={{ stu_name }}><br>
+    学生电话：<input type="text" name="stu_phone" placeholder={{ stu_phone }}><br>
+    学生地址：<input type="text" name="stu_addr" placeholder={{ stu_addr }}><br>
+    学生院系：<input type="text" name="stu_faculty" placeholder={{ stu_faculty }}><br>
+    学生专业：<input type="text" name="stu_major" placeholder={{ stu_major }}><br>
+    <input class="bc" type="submit" value="保存">
+</form>
+   {% if msg %}
+       {{ msg }}
+   {% endif %}
+</body>
+</html>

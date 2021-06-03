@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>请输入你要想要删除的学生学号</h1>
+<form method="post" action="/student/delete/">
+    {% csrf_token %}
+    学生学号：<input type="text" name="stu_id" placeholder={{ id }}><br>
+    <input class="bc" type="submit" value="删除">
+</form>
+{% if msg %}
+    {{ msg }}
+{% endif %}
+</body>
+</html>

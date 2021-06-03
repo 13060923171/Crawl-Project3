@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+你好：{{ status }}
+<br>
+{% if lenght %}
+    <a href="/student/logout/">退出</a><br>
+    <h1>欢迎来到学生信息管理系统</h1><br>
+    <h3>请选择你要执行的功能</h3>
+    <a href="{% url 'student:add' %}">增加学生信息</a><br>
+    <a href="{% url 'student:select' %}">查询学生信息</a><br>
+    <a href="{% url 'student:delete' %}">删除学生信息</a><br>
+    <a href="{% url 'student:update' %}">修改学生信息</a><br>
+{% else %}
+    <a href="/student/login/">登录</a><br>
+{% endif %}
+</body>
+</html>
