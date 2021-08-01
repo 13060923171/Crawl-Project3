@@ -99,6 +99,7 @@ def data():
             data_time = str(now[5:8])+ str(int(now[8:]) - 2)
             list_data_time.append(data_time)
         rate_of_increase = "{}".format((fund_df['日增长率'][-1]))
+        print(fund_df)
         list_rate_of_increase.append(rate_of_increase)
         one_week = "{:.3}%".format(sum([float(o) for o in fund_df['日增长率'][-7:]]))
         list_one_week.append(one_week)
