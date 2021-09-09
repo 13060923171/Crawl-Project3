@@ -77,63 +77,67 @@ def get_fund(code, start_date, end_date, page=1, per=20):
 def data():
     with open('代码.txt','r',encoding='utf-8')as f:
         content = f.readlines()
+    list_code = [str(c).replace('\n', '') for c in content]
     now = time.strftime('%Y-%m-%d', time.localtime(time.time()))
     over_the_past_year = str(int(now[0:4]) - 1) + now[4:]
-    list_one_week = []
-    list_two_week = []
-    list_three_week = []
-    list_four_week = []
-    list_one_month = []
-    list_three_month = []
-    list_six_month = []
-    list_one_year = []
-    list_data_time = []
-    list_rate_of_increase = []
-    d = [i.strip('\n') for i in content]
-    for i in tqdm(d):
-        fund_df = get_fund('{}'.format(i), start_date='{}'.format(over_the_past_year), end_date='{}'.format(now))
-        if int(int(now[8:]) - 2) < 10:
-            data_time = str(now[5:8]) + '0' + str(int(now[8:]) - 2)
-            list_data_time.append(data_time)
-        else:
-            data_time = str(now[5:8])+ str(int(now[8:]) - 2)
-            list_data_time.append(data_time)
-        rate_of_increase = "{}".format((fund_df['日增长率'][-1]))
-        print(fund_df)
-        list_rate_of_increase.append(rate_of_increase)
-        one_week = "{:.3}%".format(sum([float(o) for o in fund_df['日增长率'][-7:]]))
-        list_one_week.append(one_week)
-        two_week = "{:.3}%".format(sum([float(o) for o in fund_df['日增长率'][-14:]]))
-        list_two_week.append(two_week)
-        three_week = "{:.3}%".format(sum([float(o) for o in fund_df['日增长率'][-21:]]))
-        list_three_week.append(three_week)
-        four_week = "{:.3}%".format(sum([float(o) for o in fund_df['日增长率'][-28:]]))
-        list_four_week.append(four_week)
-        one_month = "{:.3}%".format(sum([float(o) for o in fund_df['日增长率'][-30:]]))
-        list_one_month.append(one_month)
-        three_month = "{:.3}%".format(sum([float(o) for o in fund_df['日增长率'][-90:]]))
-        list_three_month.append(three_month)
-        six_month = "{:.3}%".format(sum([float(o) for o in fund_df['日增长率'][-180:]]))
-        list_six_month.append(six_month)
-        one_year = "{:.3}%".format(sum([float(o) for o in fund_df['日增长率'][:]]))
-        list_one_year.append(one_year)
-    return list_one_week,list_two_week,list_three_week,list_four_week,list_one_month,list_three_month,list_six_month,list_one_year,list_data_time,list_rate_of_increase,d
-
-
+    fund = get_fund('012079',over_the_past_year,now)
+    print(list_code)
+    # list_one_week = []
+    # list_two_week = []
+    # list_three_week = []
+    # list_four_week = []
+    # list_one_month = []
+    # list_three_month = []
+    # list_six_month = []
+    # list_one_year = []
+    # list_data_time = []
+    # list_rate_of_increase = []
+    # d = [i.strip('\n') for i in content]
+    # for i in tqdm(d):
+    #     fund_df = get_fund('{}'.format(i), start_date='{}'.format(over_the_past_year), end_date='{}'.format(now))
+    #     if int(int(now[8:]) - 2) < 10:
+    #         data_time = str(now[5:8]) + '0' + str(int(now[8:]) - 2)
+    #         list_data_time.append(data_time)
+    #     else:
+    #         data_time = str(now[5:8])+ str(int(now[8:]) - 2)
+    #         list_data_time.append(data_time)
+    #     rate_of_increase = "{}".format((fund_df['日增长率'][-1]))
+    #     print(fund_df)
+    #     list_rate_of_increase.append(rate_of_increase)
+    #     one_week = "{:.3}%".format(sum([float(o) for o in fund_df['日增长率'][-7:]]))
+    #     list_one_week.append(one_week)
+    #     two_week = "{:.3}%".format(sum([float(o) for o in fund_df['日增长率'][-14:]]))
+    #     list_two_week.append(two_week)
+    #     three_week = "{:.3}%".format(sum([float(o) for o in fund_df['日增长率'][-21:]]))
+    #     list_three_week.append(three_week)
+    #     four_week = "{:.3}%".format(sum([float(o) for o in fund_df['日增长率'][-28:]]))
+    #     list_four_week.append(four_week)
+    #     one_month = "{:.3}%".format(sum([float(o) for o in fund_df['日增长率'][-30:]]))
+    #     list_one_month.append(one_month)
+    #     three_month = "{:.3}%".format(sum([float(o) for o in fund_df['日增长率'][-90:]]))
+    #     list_three_month.append(three_month)
+    #     six_month = "{:.3}%".format(sum([float(o) for o in fund_df['日增长率'][-180:]]))
+    #     list_six_month.append(six_month)
+    #     one_year = "{:.3}%".format(sum([float(o) for o in fund_df['日增长率'][:]]))
+    #     list_one_year.append(one_year)
+    # return list_one_week,list_two_week,list_three_week,list_four_week,list_one_month,list_three_month,list_six_month,list_one_year,list_data_time,list_rate_of_increase,d
+    #
+    #
 
 if __name__ == '__main__':
-    list_one_week,list_two_week,list_three_week,list_four_week,list_one_month,list_three_month,list_six_month,list_one_year,list_data_time,list_rate_of_increase,d = data()
-    df = pd.DataFrame()
-    df['基金代码'] = d
-    df['最新日期'] = list_data_time
-    df['最新增长率'] = list_rate_of_increase
-    df['最近一个星期'] = list_one_week
-    df['最近两个星期'] = list_two_week
-    df['最近三个星期'] = list_three_week
-    df['最近四个星期'] = list_four_week
-    df['最近一个月'] = list_one_month
-    df['最近三个月'] = list_three_month
-    df['最近六个月'] = list_six_month
-    df['最近一年'] = list_one_year
-    df.to_excel('基金分析.xlsx')
-    print('success')
+    print(data())
+    # list_one_week,list_two_week,list_three_week,list_four_week,list_one_month,list_three_month,list_six_month,list_one_year,list_data_time,list_rate_of_increase,d = data()
+    # df = pd.DataFrame()
+    # df['基金代码'] = d
+    # df['最新日期'] = list_data_time
+    # df['最新增长率'] = list_rate_of_increase
+    # df['最近一个星期'] = list_one_week
+    # df['最近两个星期'] = list_two_week
+    # df['最近三个星期'] = list_three_week
+    # df['最近四个星期'] = list_four_week
+    # df['最近一个月'] = list_one_month
+    # df['最近三个月'] = list_three_month
+    # df['最近六个月'] = list_six_month
+    # df['最近一年'] = list_one_year
+    # df.to_excel('基金分析.xlsx')
+    # print('success')
