@@ -1,38 +1,55 @@
 import requests
-import re
+import hashlib
+import execjs
 import chardet
-from lxml import etree
+import re
 
-headers = {
 
-    'x-zse-93': '101_3_2.0',
-    'x-zse-96': '2.0_aXN0kirqeLNxgqO0f82qgvr8k7Fpo_2qKRY8c7Xqr_SY',
-    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36',
-    'referer': 'https://www.zhihu.com/',
-    'cookie': '_zap=5b3012c1-6a33-453a-8f30-b19c23123fbc; d_c0="AKBZK4t3wBKPTtjh3eimAwjXLGUs6yLL4yo=|1614933884"; _xsrf=7466a4be-ff14-4e8c-a706-a558af8c1d90; Hm_lvt_98beee57fd2ef70ccdd5ca52b9740c49=1622451884,1622773987,1623030424,1623222909; SESSIONID=qSfOfj9A0Gyk5u6BAG97T8ee1lq7hnB5kYVciRFkjg4; JOID=VF8QAk2g9X3wr-SMJKfkpckilE010KQfuMmPt2GQswafnZG7ZN2Zvpeu54onrmzeqamzRNtWjwAGhQWVVjMgI3U=; osd=W10UBUKv93n3oOuOIKDrqssmk0I60qAYt8aNs2afvASbmp60ZtmesZis440ooW7arqa8Rt9RgA8EgQKaWTEkJHo=; __snaker__id=WiaVCMMjC9fHiHtj; gdxidpyhxdE=fRrCdKCGt7DbUNTO0Pl342huIgPT2E%5CerbD2qqp4EOvH%2FQ%2F1JfmE%2Bghq1bzKgYeA1Y0vwxrDPmdwEim1fTvcwONiTLLH9CurOSqeQrU%2FrO0%2BaVcoPJfmO8Kb2W53ciMUy5bQZUiZvh%5CRnz2B9h%2FBUGb%2BjwWxJIMX9oKrgwBLetEGNi3v%3A1623223811134; _9755xjdesxxd_=32; YD00517437729195%3AWM_NI=EDkOlCjqIVONtPCD1NRTxPapmCXHziZ1LTR38mK81FGZT5Sk9BhpKZdEmuRnBwARknRpjnCYVlEO5EuKoxvyHA%2FKsMy1XzFwbh0HC9Zu8b0WKs5THg8TNcCjmhbVMCrVcUE%3D; YD00517437729195%3AWM_NIKE=9ca17ae2e6ffcda170e2e6eed9d96983b3aaacf04192ef8fb3d84f838a9aaab53cf5b2e59bc44e82998490d62af0fea7c3b92a879ca5b0ef49aaaf87b7ce46b8908da5b446928cb8b1e47caf9d98a9f9639aef84b5d139fcb385d9b44e85869cd6d261fb9ea891ca52a89ba396d16682a98fb3ea6692b0a68fc25396b48bb0b84fb795a199f5738c9fe1acf247bbef989bc57da2b800a9c2339aabf883b35d89adfbb5cb6dfc8c8284c262afb8aeb7d049b28aadb6c837e2a3; YD00517437729195%3AWM_TID=DmCRHC%2BEB85BVBVQRRNqg%2Byv2EUVSK9D; captcha_ticket_v2="2|1:0|10:1623222917|17:captcha_ticket_v2|704:eyJ2YWxpZGF0ZSI6IkNOMzFfbHIydXM4X2ZBLUtxeC1wb0NzYTY1NGtqYlFULWpzUVV4UTdwTTJpbUxhWVZlTWlGbGRQWDBuVlA0VlgtenBVUEhfNGJsNy1xZDhhMHR5R20yblJmczJ2WjR5d2pKYTFzLUsyZlhPTHpiSFUtU3ZmZG9DSmphb01mN1VWYUFtN3VGODJkYWJSMjcxeUh0X3o2aFFCaVpqUWFUV1FPUW5KaWVlTG1qUDV1cVFJTVJKTk1aVVhvLUl4Vl9CTlFuWUVzQklNTXh5SE9fYV8uU0YyV3hhalVqU0ROOWpZcGlHODZnVHQxV21HclR6ZHZPUUU1T0RYcnpjd1NEUUlFdno1UkZaVnNCTVlydHpfQ1ZkMUxyZzVWLjZBUWVHVFNRc2FrWWFtS0xyX0F5c29jYWFqbjIxbDBIWVRoTmhfRTBObFhyUmpveDZhN2NrMm5vN1I0ZW90LWpTZmRrbGFGN3dDeGNvMWltaTVwZE5SS2Z2Lmg5TTJCLVRlWmlxVkl1OENHRUltcXk0T3ZyZE42cFFiUFE1WXJCOFk3RGFodkZpZ2pUcHBOTHlrbEhTZ25DLnp6U1VyeEIuX1p2Q0lvRHkybHdiTW5xT3FHQWVtc2JDSE1uUVQtQnp3YXhhcjBHTy5VdktJVUQ1ajlXczBLY1VQV1JHQWl0LS4ydWRwMyJ9|f72c58c3e81fd7742eab8ffc9c35138e9234327f77d3d58f0b6dc170cde6c228"; z_c0="2|1:0|10:1623222929|4:z_c0|92:Mi4xR09sNERnQUFBQUFBb0ZrcmkzZkFFaVlBQUFCZ0FsVk5rYml0WVFEUWVvMTR2cXdOOURfbEtQOEpjZGVEYjNORTNn|c576d0622807b2cc11f05add77efce9e7f1615f7d477e501095cd2cd979dcd59"; captcha_session_v2="2|1:0|10:1623222930|18:captcha_session_v2|88:bnk3SlE3b2lPWmN6b2MxRy9PZFpXS2F2Qno0ZE1QdzRGSGpZaEE2TXZuY2EwcW40ek5SMVdBQ0xtWEFrVllCbA==|044b8b404af8b25cdbd2e471dc3b17c49f2a3661f5b81e1965e95696392ffc58"; tst=r; Hm_lpvt_98beee57fd2ef70ccdd5ca52b9740c49=1623225780; KLBRSID=2177cbf908056c6654e972f5ddc96dc2|1623225780|1623222907',
-}
+def zse():
+    url = '/api/v4/search_v3?t=general&q=%E5%9F%BA%E9%87%91&correction=1&offset=0&limit=20&filter_fields=&lc_idx=0&show_all_topics=0'
+    f = "+".join(["101_3_2.0", url, '"AKBZK4t3wBKPTtjh3eimAwjXLGUs6yLL4yo=|1614933884"'])
+    fmd5 = hashlib.new('md5', f.encode()).hexdigest()
+    with open('m.js', 'r') as f:
+        ctx1 = execjs.compile(f.read())
+    encrypt_str = ctx1.call('b', fmd5)
+    zse_96 = '2.0_' + encrypt_str
+    return zse_96
 
-def get_parse():
-    url = 'https://www.zhihu.com/api/v4/topics/19841068/feeds/essence?include=data%5B%3F(target.type%3Dtopic_sticky_module)%5D.target.data%5B%3F(target.type%3Danswer)%5D.target.content%2Crelationship.is_authorized%2Cis_author%2Cvoting%2Cis_thanked%2Cis_nothelp%3Bdata%5B%3F(target.type%3Dtopic_sticky_module)%5D.target.data%5B%3F(target.type%3Danswer)%5D.target.is_normal%2Ccomment_count%2Cvoteup_count%2Ccontent%2Crelevant_info%2Cexcerpt.author.badge%5B%3F(type%3Dbest_answerer)%5D.topics%3Bdata%5B%3F(target.type%3Dtopic_sticky_module)%5D.target.data%5B%3F(target.type%3Darticle)%5D.target.content%2Cvoteup_count%2Ccomment_count%2Cvoting%2Cauthor.badge%5B%3F(type%3Dbest_answerer)%5D.topics%3Bdata%5B%3F(target.type%3Dtopic_sticky_module)%5D.target.data%5B%3F(target.type%3Dpeople)%5D.target.answer_count%2Carticles_count%2Cgender%2Cfollower_count%2Cis_followed%2Cis_following%2Cbadge%5B%3F(type%3Dbest_answerer)%5D.topics%3Bdata%5B%3F(target.type%3Danswer)%5D.target.annotation_detail%2Ccontent%2Chermes_label%2Cis_labeled%2Crelationship.is_authorized%2Cis_author%2Cvoting%2Cis_thanked%2Cis_nothelp%2Canswer_type%3Bdata%5B%3F(target.type%3Danswer)%5D.target.author.badge%5B%3F(type%3Dbest_answerer)%5D.topics%3Bdata%5B%3F(target.type%3Danswer)%5D.target.paid_info%3Bdata%5B%3F(target.type%3Darticle)%5D.target.annotation_detail%2Ccontent%2Chermes_label%2Cis_labeled%2Cauthor.badge%5B%3F(type%3Dbest_answerer)%5D.topics%3Bdata%5B%3F(target.type%3Dquestion)%5D.target.annotation_detail%2Ccomment_count%3B&offset=5&limit=10'
-    html = requests.get(url,headers=headers)
-    html.encoding = chardet.detect(html.content)['encoding']
-    coment = html.text
-    print(coment)
-    content = re.compile('"title":"(.*?)",')
-    contents = content.findall(coment)
-    voteup = re.compile('"voteup_count":(.*?),"')
-    voteups = voteup.findall(coment)
-    comment_count = re.compile('"comment_count":(.*?),"')
-    comment_counts = comment_count.findall(coment)
+print(zse())
+# def parse_url(url):
+#     zse_96 = zse(url)
+#     headers = {
+#         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36',
+#         'cookie': '_zap=586214e2-eb68-473c-aa37-0f561b032fb3; d_c0="AfAdGglIxxOPTqgIZnOWVWcMjOz8dJ-o2ik=|1632571062"; _9755xjdesxxd_=32; YD00517437729195%3AWM_TID=aHRoYQIkzWVBBQQQURcqwIznRcZYXsPS; captcha_session_v2="2|1:0|10:1633093348|18:captcha_session_v2|88:ekVUYUcxUzFjcFc5REp4ck5maUZKT0tDMVN5ckZPT1hoeW1YdTBqMXQ2YlByM3NoQzlubDR6Mk51ZzNvclFGZA==|4cc8a0ee3d09b63409732e85339d7fbc88203fbf4903377ee153b729807d3844"; __snaker__id=JtscdFq4wHKaSK58; gdxidpyhxdE=J6dwqLtR47BG%2F0CxGv1To7zHCMz%2F2tlNt0tZZgL5huQSrBwv7uDDbClb%2BTKbXIALPpzcAu3tlopyHGtqhlSAqGmfHEWjIwdIuK%2B6x3X%2Ft1Sgl4%2BkV0j2cqyZxxNsAnELUSdQN7RQzzuuwy%2FvT4fn355AAZP7mvpQODHWEVEJcKWGgVT4%3A1633094247130; YD00517437729195%3AWM_NI=vZ6%2FPge2T2NVR1XsYg1wpCSgZfnxkleZv5QwEuo%2F5KyYM0uaI%2BAPReRttvTwXvNUsA8qeF8QCMviiY6CD48SopTcsIsKmx3hxO0E2G0hf8DQkAIkNQ7U0m1ZM1X%2BNxtFQ3A%3D; YD00517437729195%3AWM_NIKE=9ca17ae2e6ffcda170e2e6eeb8cf74abae89bbc44fa78e8ea6d55e938e8eaff83382f185d7b366b6bd98a4c52af0fea7c3b92ab686fad0d36da7ee9cd3cd5e92ef9894dc6df3a9c0a4d26d9abaa299ea68a786bad6d47d87aba1d0b841bb8783d1f86b8bf58fb1d16f92acbc97d77d9caa82b6f24bfcafaba7bb5b8193ba8aec53f69d8cd5bb59adb09c84f243b195a399b264bc9100a6b14df4b8aad9c75ba99f878ccd5bf58b008eb4528fef98cccd74b89a9fd4c437e2a3; captcha_ticket_v2="2|1:0|10:1633093411|17:captcha_ticket_v2|704:eyJ2YWxpZGF0ZSI6IkNOMzFfTi5Bd3hRZlJnVHo1T01lOVowMC1nU2NURHpuY1pLQ2dLdVRlMXBhMklpS21oTWJCRzVlb0N4TWRkWW04d2VmaGNGaWNRb3hwc3d3eXgwejE4Q250UjVDY0VjbEhOaWJyb0t6ODdHdzVXdFlObzdybVM1TTZCXy1JZkV2ZXZ3TThsTjViYTJISmxEaEZkV2FCTG0yQzRlZXJwemNNSDB2SmRNbHZjbm9Zd1ZRemwtNWpJTlV2ZVpOZzhCelJJcC1VOWNuVzZRMG1JNnd5bmtMUFE1NS05UFdjbHo0OHAwZ1RGOExyVnU5d1JKbXpmUHdSLWJSNzItQU9MVUJZYW1HenhWWm40QWprNVFqNHlQYVo3SHhGWjA1NkU2MFlJOE0udEs4T2VaeFd0bFI0NlZMUFJUYnYwOWFHcnBRbmZrVDBDN0FZam9yenBXQXFaaVoxbkxhRW1QT0haa0ZKNUsyTElYS0RIOGRwMkJCNS5DeG9HLjBPRGlyeUJyc2t2dklIWUV1UmZrV0VSZy5NWWM5UnNKYVFVbE1tS09xRFhLdmY5ZmR0Ql9XVjRaVzRZV2lIVmV2NS56RjVDTDZWTTlqQnItdFk2cUhaQXZja1dsQ2R0Qm5PVVdOZUVIbGN2ZlI2SHRPMlA1bHVRTEc3Wmo0Q0VUcTF0Q2dOcGNtMyJ9|490c73975c767f1e669c52174bd4340e71d3067f5a4f3d9194f10f71db3cd539"; z_c0="2|1:0|10:1633093427|4:z_c0|92:Mi4xR09sNERnQUFBQUFCOEIwYUNVakhFeVlBQUFCZ0FsVk5NMVZFWWdDQm94TWU5ZEg2dkVUVzl4R1NQVV94MENFSW1n|218f1f1a9ac938ce850162bca588335a3bd566d4ead29732ab19311d3f2936e2"; ff_supports_webp=1; _xsrf=6jfeHJiZW1JSmjcgr8tmhdFsOSUYyvhI; q_c1=e30a8c85a3e747b0bd1f77d54d67737d|1634050001000|1634050001000; tst=r; Hm_lvt_98beee57fd2ef70ccdd5ca52b9740c49=1633964929,1634049625,1634126660,1634130764; SESSIONID=IiPiN1jGy47KibNpsahFHnuAJ3w27q8YPZUTVICKdo6; JOID=UF8XAEtXyd7j4G5SSlZuyxBpvmdYG6WPiaxaPQws-Oypig4ZPwUWuoPnblZIvOWv4ILwOuH7K-S479Mumiw1KJM=; osd=UVAXBk9Wxt7l5G9dSlBqyh9puGNZFKWJja1VPQoo-eOpjAoYMAUQvoLoblBMveqv5obxNeH9L-W379UqmyM1Lpc=; Hm_lpvt_98beee57fd2ef70ccdd5ca52b9740c49=1634130773; KLBRSID=d1f07ca9b929274b65d830a00cbd719a|1634130782|1634130764',
+#         'x-zse-93': '101_3_2.0',
+#         'x-zse-96':zse_96,
+#         'referer': 'https://www.zhihu.com/',
+#     }
+#     html = requests.get(url,headers=headers)
+#     html.encoding = chardet.detect(html.content)['encoding']
+#     if html.status_code == 200:
+#         get_html(html)
+#     else:
+#         print(html.status_code)
+#
+#
+# def get_html(html):
+#     coment = html.text
+#     content = re.compile('"title":"(.*?)",')
+#     contents = content.findall(coment)
+#     voteup = re.compile('"voteup_count":(.*?),"')
+#     voteups = voteup.findall(coment)
+#     comment_count = re.compile('"comment_count":(.*?),"')
+#     comment_counts = comment_count.findall(coment)
+#     try:
+#         for i in range(len(contents)):
+#             c = contents[i]
+#             v = voteups[i]
+#             cc = comment_counts[i]
+#             print(c,v,cc)
+#     except:
+#         pass
 
-    try:
-        for i in range(len(contents)):
-            c = contents[i]
-            v = voteups[i]
-            cc = comment_counts[i]
-            print(c,v,cc)
-    except:
-        pass
 
-if __name__ == '__main__':
-    get_parse()
+
+
