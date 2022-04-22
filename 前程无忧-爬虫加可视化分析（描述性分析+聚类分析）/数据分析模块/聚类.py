@@ -1,10 +1,11 @@
 import jieba
 import pandas as pd
 # coding=utf-8
+import codecs
 import matplotlib.pyplot as plt
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.feature_extraction.text import CountVectorizer
-
+from sklearn.metrics import silhouette_score
 # 对原文本分词
 def cut_words():
     # 获取当前文件路径
@@ -38,6 +39,7 @@ def move_stopwwords(content, stopwords):
     with open('数据.txt', 'w', encoding='UTF-8-SIG') as f:
         f.write(content_after)
 
+
 content = cut_words()
 stopwords = load_stopwords()
 move_stopwwords(content, stopwords)
@@ -62,9 +64,27 @@ word = vectorizer.get_feature_names()
 # 将tf-idf矩阵抽取出来 元素w[i][j]表示j词在i类文本中的tf-idf权重
 weight = tfidf.toarray()
 
+data = {'word': word,
+        'tfidf': weight.sum(axis=0).tolist()}
+df2 = pd.DataFrame(data)
+df2['tfidf'] = df2['tfidf'].astype('float64')
+df2 = df2.sort_values(by=['tfidf'],ascending=False)
+df2.to_csv('tfidf.csv',encoding='utf-8-sig')
 # 打印特征向量文本内容
 print('Features length: ' + str(len(word)))
 
+
+result = codecs.open('文本向量化.txt', 'w', 'utf-8')
+# 打印每类文本的tf-idf词语权重，第一个for遍历所有文本，第二个for便利某一类文本下的词语权重
+for i in range(len(weight)):
+    # print u"-------这里输出第", i, u"类文本的词语tf-idf权重------"
+    for j in range(len(word)):
+        # print weight[i][j],
+        result.write(str(weight[i][j]) + ' ')
+    result.write('\r\n\r\n')
+result.close()
+# 打印特征向量文本内容
+print('Features length: ' + str(len(word)))
 
 
 
@@ -74,6 +94,8 @@ from sklearn.cluster import KMeans
 clf = KMeans(n_clusters=4)
 print(clf)
 pre = clf.fit_predict(weight)
+socre = silhouette_score(weight,pre)
+print('轮廓系数:',socre)
 df = pd.read_excel('招聘数据.xlsx')
 result = pd.concat((df, pd.DataFrame(pre)), axis=1)
 result.rename({0: '聚类结果'}, axis=1, inplace=True)
