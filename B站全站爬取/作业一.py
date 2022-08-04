@@ -29,8 +29,8 @@ user_agent = [
 
 headers = {
     'user-agent': random.choice(user_agent),
-    "origin": "https://search.bilibili.com",
-   "cookie": "_uuid=715101066C-FAA5-D175-EA51-51071BCDDFFB928793infoc; buvid3=0D1B00B3-6F3D-4B89-AFC7-DFE562DDF14F167614infoc; b_nut=1638068729; DedeUserID=35906556; DedeUserID__ckMd5=6bc77a6b9c4d788a; video_page_version=v_old_home; blackside_state=1; CURRENT_QUALITY=0; rpdid=|(umR~~|Ykmu0J'uYJ)JYY~R); i-wanna-go-back=-1; b_ut=5; LIVE_BUVID=AUTO1816398016892574; buvid4=C66AE545-82A9-EB40-B87C-DA9B90EDB50A31270-022013014-Vp25bGcbK8ZpT1kPMJFT9g%3D%3D; fingerprint=807b5f756ae9d19228302dac996d1efd; buvid_fp_plain=undefined; buvid_fp=f8287eb05aecbd49171ed08907b0b66d; SESSDATA=c7c7f7e4%2C1659262304%2C7c0f4%2A21; bili_jct=81d5eaa78413784a8cec20f7b076ab3c; sid=5g0611ll; bp_t_offset_35906556=629159455574008408; bp_video_offset_35906556=631834442866884617; CURRENT_BLACKGAP=0; innersign=0; b_lsid=EDFE95D7_17F55230D71; nostalgia_conf=-1; CURRENT_FNVAL=80; PVID=1",
+    # "origin": "https://search.bilibili.com",
+   "cookie": "buvid3=9AD7946F-F104-C53A-D57D-B9A1ED199C3F38237infoc; i-wanna-go-back=-1; _uuid=4447FCCE-10D48-A6E5-2F4C-AA3EF101DC33D38615infoc; buvid4=6B686B1D-6309-A6D5-737A-DCD4BBB5CB1E39359-022032919-3B5Gb3RqLY4lnqUyS/geHw%3D%3D; nostalgia_conf=-1; CURRENT_BLACKGAP=0; rpdid=|(um|kmkJ|~Y0J'uYR)llk~~u; buvid_fp_plain=undefined; hit-dyn-v2=1; LIVE_BUVID=AUTO7416505258571664; fingerprint=02a51db82bc114addf42e55b5ecb25f7; SESSDATA=ef45abfa%2C1666519854%2Ce3696%2A41; bili_jct=8e1e9744710c8e39c611f3c282c5e945; DedeUserID=35906556; DedeUserID__ckMd5=6bc77a6b9c4d788a; sid=l5g3nk8n; buvid_fp=02a51db82bc114addf42e55b5ecb25f7; CURRENT_QUALITY=80; b_ut=5; PVID=1; blackside_state=0; b_lsid=8C2FDC76_181F1129711; bsource=share_source_copy_link; bp_video_offset_35906556=681897226011672601; innersign=1; b_timer=%7B%22ffp%22%3A%7B%22333.1007.fp.risk_9AD7946F%22%3A%22181F1129E51%22%2C%22333.337.fp.risk_9AD7946F%22%3A%22181F112EEB4%22%2C%22333.788.fp.risk_9AD7946F%22%3A%22181F11F8FAA%22%2C%22333.999.fp.risk_9AD7946F%22%3A%22181F11A6563%22%2C%22333.880.fp.risk_9AD7946F%22%3A%22181F043BCC0%22%7D%7D; CURRENT_FNVAL=80",
 }
 
 #判断页面是否正常
@@ -54,7 +54,7 @@ def video_number():
         "platform": "pc",
         "highlight": 1,
         "single_column": 0,
-        "keyword": keyword,
+        "keyword": name,
         "category_id":None,
         "search_type": "video",
         "dynamic_offset": 0,
@@ -74,7 +74,7 @@ def video_number():
 
 #获取每个视频的基本信息
 def video_content(numPages):
-    for n in tqdm(range(1,int(numPages)+1)):
+    for n in tqdm(range(1,int(numPages)+5)):
         data = {
             "__refresh__": "true",
             "_extra": None,
@@ -86,10 +86,10 @@ def video_content(numPages):
             "platform": "pc",
             "highlight": 1,
             "single_column": 0,
-            "keyword": keyword,
+            "keyword": name,
             "category_id": None,
             "search_type": "video",
-            "dynamic_offset": 0,
+            "dynamic_offset": int((n-1) * 36),
             "preload": "true",
             "com2co": "true",
         }
@@ -111,16 +111,40 @@ def video_content(numPages):
                     # 视频播放量
                     play = r['play']
                     # 视频弹幕数量
-                    video_review = r['video_review']
+                    danmaku = r['danmaku']
                     # 视频评论数量
                     review = r['review']
+                    # 视频链接
+                    url = r['arcurl']
+                    # 收藏数量
+                    favorites = r['favorites']
+                    # 点赞
+                    like = r['like']
+                    # 标签
+                    tag = r['tag']
+                    # 时间戳
+                    pubdate = r['pubdate']
+
+                    is_pay = r['is_pay']
+                    is_union_video = r['is_union_video']
+                    timeArray = time.localtime(pubdate)
+                    timedate = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
+
+
+                    df['发布时间'] = [timedate]
+                    df['视频链接'] = [url]
                     df['标题'] = [title1]
                     df['时长'] = [duration]
                     df['作者名称'] = [author]
                     df['播放量'] = [play]
-                    df['弹幕信息'] = [video_review]
                     df['评论数'] = [review]
-                    df.to_csv('./作业一数据存储/{}_相关信息.csv'.format(keyword), mode='a+', header=None, index=None, encoding='utf-8')
+                    df['弹幕数'] = [danmaku]
+                    df['点赞'] = [like]
+                    df['收藏'] = [favorites]
+                    df['标签'] = [tag]
+                    df['1'] = [is_pay]
+                    df['2'] = [is_union_video]
+                    df.to_csv('./作业一数据存储/{}_相关信息.csv'.format(name), mode='a+', header=None, index=None, encoding='utf-8-sig')
                     time.sleep(0.1)
                 except Exception as e:
                     pass
@@ -128,72 +152,24 @@ def video_content(numPages):
             return '视频参数错误，请检查'
 
 
-def type_number(type):
-    data = {
-        "__refresh__": "true",
-        "_extra": None,
-        "context": None,
-        "page": 1,
-        # "page_size": 12,
-        "from_source": None,
-        "from_spmid": 333.337,
-        "platform": "pc",
-        "highlight": 1,
-        "single_column": 0,
-        "keyword": keyword,
-        "category_id": None,
-        "search_type": type,
-        "preload": "true",
-        "com2co": "true",
-    }
-    url = "https://api.bilibili.com/x/web-interface/search/type?"
-    status, html = get_parse(url, data)
-    if status == 200:
-        content = html.json()
-        # 视频总数量
-        if type == 'live':
-            numResults = content['data']['pageinfo']['live_room']['total']
-            return numResults
-        else:
-            numResults = content['data']['numResults']
-            return numResults
-    else:
-        return '视频参数错误，请检查'
-
-
-def type_sum():
-    number_sum = []
-    list_type = ['video', 'media_bangumi', 'media_ft', 'live', 'article', 'topic', 'bili_user']
-    name = ['视频','番剧','影视','直播','专栏','话题','用户']
-    for l in list_type:
-        number = type_number(l)
-        number_sum.append(number)
-
-    filename = '作业一数据存储'
-    # 创建一个文件夹，如果这个文件夹不存在，那么我们就创建这个文件夹，这个是一条死语句，必须得背下来
-    if not os.path.exists(filename):
-        os.makedirs(filename)
-    df1 = pd.DataFrame()
-    df1['内容名称'] = name
-    df1['对应数量'] = number_sum
-    df1.to_csv('./作业一数据存储/{}_相关内容数量统计.csv'.format(keyword),encoding='utf-8')
-
-
-def zlshuju():
-    df2 = pd.read_csv('./作业一数据存储/fate_相关信息.csv')
-    print(df2)
 if __name__ == '__main__':
-    # keyword = parse.quote('fate')
-    # type_sum()
-    #
-    # df = pd.DataFrame()
-    # df['标题'] = ['标题']
-    # df['时长'] = ['时长']
-    # df['作者名称'] = ['作者名称']
-    # df['播放量'] = ['播放量']
-    # df['弹幕信息'] = ['弹幕信息']
-    # df['评论数'] = ['评论数']
-    # df.to_csv('./作业一数据存储/{}_相关信息.csv'.format(keyword),mode='w',header=None,index=None,encoding='utf-8')
-    # video_number()
-    zlshuju()
+    name = '王者荣耀'
+    keyword = parse.quote('王者荣耀')
+    df = pd.DataFrame()
+    df['发布时间'] = ['发布时间']
+    df['视频链接'] = ['视频链接']
+    df['标题'] = ['标题']
+    df['时长'] = ['时长']
+    df['作者名称'] = ['作者名称']
+    df['播放量'] = ['播放量']
+    df['评论数'] = ['评论数']
+    df['弹幕数'] = ['弹幕数']
+    df['点赞'] = ['点赞']
+    df['收藏'] = ['收藏']
+    df['标签'] = ['标签']
+    df['1'] = ['1']
+    df['2'] = ['2']
+    df.to_csv('./作业一数据存储/{}_相关信息.csv'.format(name),mode='w',header=None,index=None,encoding='utf-8-sig')
+    video_number()
+
 
